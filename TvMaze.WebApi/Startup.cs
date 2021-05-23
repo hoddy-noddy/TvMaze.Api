@@ -31,10 +31,13 @@ namespace TvMaze.WebApi
             services.AddDbContextFactory<TvMazeContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TvMazeContext")));
             services.AddHttpClient<ITvMazeService, TvMazeService>(client =>
             {
+                
                 client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
-            })
+            })  
                 .AddPolicyHandler(GetRetryPolicy());
             services.AddControllers();
+            services.AddMvcCore();
+
             services.AddSwaggerGen();
             services.AddAutoMapper(GetAssembliesForAutoMapper());
 

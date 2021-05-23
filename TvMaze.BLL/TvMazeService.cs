@@ -40,6 +40,7 @@ namespace TvMaze.BLL
 
         private async Task<Show> GetShowWithCastInformation(int id, CancellationToken cancellationToken)
         {
+            //todo: Url in configuration
             var response = await client.GetAsync($"shows/{id}?embed=cast",cancellationToken);
 
             var json = await response.Content.ReadAsStringAsync();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 using TvMaze.BLL;
 
@@ -18,17 +19,19 @@ namespace TvMaze.WebApi.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetShowsWithCast(int pageSize, int pageNumber)
+        public async Task<IActionResult> GetShowsWithCast(int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
-            var showList = await showService.GetAllShows(pageSize, pageNumber == 0 ? 0 : (pageNumber - 1));
+            var zeroBasedPagenumber = (pageNumber == 0 ? 0 : (pageNumber - 1));
+
+            var showList = await showService.GetAllShowsAsync(pageSize,zeroBasedPagenumber,cancellationToken);
             
             return new OkObjectResult(showList);
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> SeedDatabase()
+        public async Task<IActionResult> SeedDatabase(CancellationToken cancellationToken)
         {
-            await service.SeedDatabaseWithShowInformation();
+            await service.SeedDatabaseWithShowInformationAsync(cancellationToken);
             return Ok();
         }
     }

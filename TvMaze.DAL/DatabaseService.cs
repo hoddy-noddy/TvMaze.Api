@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TvMaze.DAL
@@ -13,16 +14,16 @@ namespace TvMaze.DAL
             this.dbContextFactory = dbContextFactory;
         }
 
-        public async Task<List<Show>> GetAllShows(int pageSize, int pageNumber)
+        public async Task<List<Show>> GetAllShowsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
         {
             using var context = dbContextFactory.CreateDbContext();
 
-            var showList = await context.Shows.Skip(pageSize * pageNumber).Take(pageSize).ToListAsync();
+            var showList = await context.Shows.Skip(pageSize * pageNumber).Take(pageSize).ToListAsync(cancellationToken);
 
             return showList;
         }
 
-        public async Task AddOrUpdateShowAsync(Show show)
+        public async Task AddOrUpdateShowAsync(Show show, CancellationToken cancellationToken)
         {
             using var context = dbContextFactory.CreateDbContext();
 
@@ -33,9 +34,9 @@ namespace TvMaze.DAL
             }
             else
             {
-                await context.Shows.AddAsync(show);
+                await context.Shows.AddAsync(show,cancellationToken);
             }         
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
         }
 
     }

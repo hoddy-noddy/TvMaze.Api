@@ -8,5 +8,6 @@ namespace TvMaze.DAL
     {
         Task<List<Show>> GetAllShowsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken);
         Task AddOrUpdateShowAsync(Show show, CancellationToken cancellationToken);
+        Task<int> GetLastShowIdInDatabase();
     }
 }

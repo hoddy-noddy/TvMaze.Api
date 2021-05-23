@@ -5,6 +5,6 @@ namespace TvMaze.BLL
 {
     public interface ITvMazeService
     {
-        Task SeedDatabaseWithShowInformationAsync(CancellationToken cancellationToken);
+        Task UpdateDatabaseWitShowInformationAsync(CancellationToken cancellationToken);
     }
 }

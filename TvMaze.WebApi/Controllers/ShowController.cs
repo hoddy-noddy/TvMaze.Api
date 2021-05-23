@@ -31,7 +31,7 @@ namespace TvMaze.WebApi.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> SeedDatabase(CancellationToken cancellationToken)
         {
-            await service.SeedDatabaseWithShowInformationAsync(cancellationToken);
+            await service.UpdateDatabaseWitShowInformationAsync(cancellationToken);
             return Ok();
         }
     }

@@ -39,5 +39,11 @@ namespace TvMaze.DAL
             await context.SaveChangesAsync(cancellationToken);
         }
 
+        public async Task<int> GetLastShowIdInDatabase()
+        {
+            using var context = dbContextFactory.CreateDbContext();
+
+            return await context.Shows.OrderByDescending(s => s.ShowId).Select(s=> s.ShowId).FirstOrDefaultAsync();
+        }
     }
 }

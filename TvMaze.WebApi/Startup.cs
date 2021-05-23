@@ -29,12 +29,16 @@ namespace TvMaze.WebApi
         {
 
             services.AddDbContextFactory<TvMazeContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TvMazeContext")));
-            services.AddHttpClient<ITvMazeService, TvMazeService>(client =>
+            services.AddHttpClient("TvMazeClient", client=>
             {
-                
                 client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
-            })  
-                .AddPolicyHandler(GetRetryPolicy());
+            }).AddPolicyHandler(GetRetryPolicy());
+            //services.AddHttpClient<ITvMazeService, TvMazeService>(client =>
+            //{
+
+            //    client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
+            //})
+
             services.AddControllers();
             services.AddMvcCore();
 
@@ -43,6 +47,7 @@ namespace TvMaze.WebApi
 
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IShowService, ShowService>();
+            services.AddScoped<ITvMazeService, TvMazeService>();
 
         }
 

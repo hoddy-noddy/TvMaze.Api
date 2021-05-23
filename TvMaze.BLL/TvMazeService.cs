@@ -25,8 +25,7 @@ namespace TvMaze.BLL
         }
 
         public async Task SeedDatabaseWithShowInformation()
-        {
-            
+        {            
             var response = await client.GetAsync("shows");
             var showListResponse = await response.Content.ReadAsStringAsync();
 

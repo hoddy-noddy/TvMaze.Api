@@ -28,7 +28,10 @@ namespace TvMaze.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextFactory<TvMazeContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TvMazeContext")));
+            services.AddDbContextFactory<TvMazeContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("TvMazeContext"), providerOptions => providerOptions.EnableRetryOnFailure());
+            });            
             services.AddHttpClient("TvMazeClient", client=>
             {
                 //todo: move this to constants class

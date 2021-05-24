@@ -18,7 +18,7 @@ namespace TvMaze.DAL
         {
             using var context = dbContextFactory.CreateDbContext();
 
-            var showList = await context.Shows.Skip(pageSize * pageNumber).Take(pageSize).ToListAsync(cancellationToken);
+            var showList = await context.Shows.OrderBy(s=> s.ShowId).Skip(pageSize * pageNumber).Take(pageSize).ToListAsync(cancellationToken);
 
             return showList;
         }
@@ -27,7 +27,7 @@ namespace TvMaze.DAL
         {
             using var context = dbContextFactory.CreateDbContext();
 
-            if(context.Shows.Any(s => s.ShowId == show.ShowId))
+            if (context.Shows.Any(s => s.ShowId == show.ShowId))
             {
                 show.Id = context.Shows.Where(s => s.ShowId == show.ShowId).Select(s => s.Id).First();
                 context.Shows.Update(show);
@@ -35,7 +35,7 @@ namespace TvMaze.DAL
             else
             {
                 await context.Shows.AddAsync(show,cancellationToken);
-            }         
+            }
             await context.SaveChangesAsync(cancellationToken);
         }
 

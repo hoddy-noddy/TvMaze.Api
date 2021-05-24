@@ -47,23 +47,18 @@ namespace TvMaze.BLL
                         
                     foreach (var show in showList)
                     {
-                        var task = AddShow(show.Id, cancellationToken);
-                        tasks.Add(task);
-                    }
-                    Task.WaitAll(tasks.ToArray());
+                        var fullShow = await GetShowWithCastInformation(show.Id, cancellationToken);
+                        //todo: this should be done in the jsonmapping
+                        fullShow.Id = 0;
+                        fullShow.ShowId = show.Id;
+                        await databaseService.AddOrUpdateShowAsync(fullShow, cancellationToken);
+                    }  
                 }
                 else
                 {
                     break;
                 }             
             }
-        }
-        private async Task AddShow(int id, CancellationToken cancellationToken)
-        {
-            var show = await GetShowWithCastInformation(id, cancellationToken);
-            show.Id = 0;
-            show.ShowId = show.Id;
-            await databaseService.AddOrUpdateShowAsync(show, cancellationToken);
         }
 
         private async Task<Show> GetShowWithCastInformation(int id, CancellationToken cancellationToken)

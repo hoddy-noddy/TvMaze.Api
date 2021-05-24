@@ -9,7 +9,7 @@ using TvMaze.DAL;
 namespace TvMaze.DAL.Migrations
 {
     [DbContext(typeof(TvMazeContext))]
-    [Migration("20210522175328_init")]
+    [Migration("20210524002211_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,9 @@ namespace TvMaze.DAL.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ShowId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

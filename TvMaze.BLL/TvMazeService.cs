@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -15,18 +16,21 @@ namespace TvMaze.BLL
     {
         private readonly IHttpClientFactory clientFactory;
         private readonly IDatabaseService databaseService;
+        private readonly IConfiguration configuration;
 
-        public TvMazeService(IHttpClientFactory clientFactory, IDatabaseService databaseService)
+        public TvMazeService(IHttpClientFactory clientFactory, IDatabaseService databaseService,IConfiguration configuration)
         {
             this.clientFactory = clientFactory;
             this.databaseService = databaseService;
+            this.configuration = configuration;
         }
 
         public async Task UpdateDatabaseWitShowInformationAsync(CancellationToken cancellationToken)
         {
             var lastShowIdInDatabase = await databaseService.GetLastShowIdInDatabase();
-            //todo: put the magic number in configuration!
-            var pageNumber = Math.Ceiling((double)lastShowIdInDatabase / 250);
+            var pageSize = int.Parse(configuration["TvMaze:PageSize"]);
+            var pageNumber = Math.Ceiling((double)lastShowIdInDatabase / pageSize);
+
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -35,8 +39,8 @@ namespace TvMaze.BLL
                 }
 
                 using var client = clientFactory.CreateClient("TvMazeClient");
-
-                var response = await client.GetAsync($"shows?page={pageNumber}");
+                var url = string.Format(configuration["TvMaze:GetShowsByPageNumberUrl"], pageNumber);
+                var response = await client.GetAsync(url,cancellationToken);
                 pageNumber++;
 
                 if (response.IsSuccessStatusCode)
@@ -63,10 +67,9 @@ namespace TvMaze.BLL
 
         private async Task<Show> GetShowWithCastInformation(int id, CancellationToken cancellationToken)
         {
-            //todo: Url in configuration
             using var client = clientFactory.CreateClient("TvMazeClient");
-           
-            var response = await client.GetAsync($"shows/{id}?embed=cast",cancellationToken);
+            var url = string.Format(configuration["TvMaze:GetShowWithCastInformationUrl"], id);
+            var response = await client.GetAsync(url, cancellationToken);
 
             var json = await response.Content.ReadAsStringAsync();
 

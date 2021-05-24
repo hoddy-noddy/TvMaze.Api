@@ -35,7 +35,7 @@ namespace TvMaze.WebApi
             services.AddHttpClient("TvMazeClient", client=>
             {
                 //todo: move this to constants class
-                client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
+                client.BaseAddress = new Uri(Configuration["TvMaze:TvMazeBaseUrl"]);
             }).AddPolicyHandler(GetRetryPolicy());
 
             services.AddControllers();

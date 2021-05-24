@@ -13,6 +13,7 @@ using System.Reflection;
 using TvMaze.BLL;
 using TvMaze.BLL.AutoMapper;
 using TvMaze.DAL;
+using TvMaze.WebApi.Automapper;
 
 namespace TvMaze.WebApi
 {
@@ -27,17 +28,12 @@ namespace TvMaze.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContextFactory<TvMazeContext>(options => options.UseSqlServer(Configuration.GetConnectionString("TvMazeContext")));
             services.AddHttpClient("TvMazeClient", client=>
             {
+                //todo: move this to constants class
                 client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
             }).AddPolicyHandler(GetRetryPolicy());
-            //services.AddHttpClient<ITvMazeService, TvMazeService>(client =>
-            //{
-
-            //    client.BaseAddress = new Uri(Configuration["TvMazeBaseUrl"]);
-            //})
 
             services.AddControllers();
             services.AddMvcCore();
@@ -48,7 +44,6 @@ namespace TvMaze.WebApi
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IShowService, ShowService>();
             services.AddScoped<ITvMazeService, TvMazeService>();
-
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -63,6 +58,7 @@ namespace TvMaze.WebApi
         {
             yield return typeof(EntityToDtoProfile).GetTypeInfo().Assembly;
             yield return typeof(DtoToEntityProfile).GetTypeInfo().Assembly;
+            yield return typeof(DtoToModelProfile).GetTypeInfo().Assembly;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

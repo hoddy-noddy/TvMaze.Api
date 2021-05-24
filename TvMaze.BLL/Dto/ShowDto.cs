@@ -8,6 +8,7 @@ namespace TvMaze.BLL.Dto
     public class ShowDto
     {
         public int Id { get; set; }
+        public int ShowId { get; set; }
         public string Name { get; set; }
         public List<PersonDto> Cast { get; set; }
     }

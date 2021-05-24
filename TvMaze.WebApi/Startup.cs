@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,15 @@ namespace TvMaze.WebApi
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<IShowService, ShowService>();
             services.AddScoped<ITvMazeService, TvMazeService>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddOptions();
+            services.AddMemoryCache();
+            services.Configure<IpRateLimitOptions>
+            (Configuration.GetSection("IpRateLimit"));
+
+            services.AddHttpContextAccessor();
         }
 
         static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
@@ -70,6 +80,7 @@ namespace TvMaze.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseIpRateLimiting();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

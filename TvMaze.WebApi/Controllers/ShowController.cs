@@ -9,7 +9,7 @@ using TvMaze.WebApi.Models;
 namespace TvMaze.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ShowController : ControllerBase
     {
         private readonly IShowService showService;

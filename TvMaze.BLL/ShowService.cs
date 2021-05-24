@@ -27,10 +27,10 @@ namespace TvMaze.BLL
 
             foreach(var show in showsList)
             {
-                show.Cast = show.Cast.OrderBy(p => p.Birthday).ToList();
+                show.Cast = show.Cast.OrderByDescending(p => p.Birthday).ToList();
             }
 
-            return showsList.OrderBy(s => s.Id).ToList();
+            return showsList.OrderBy(s => s.ShowId).ToList();
         }
     }
 }
